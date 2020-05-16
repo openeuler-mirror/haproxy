@@ -5,7 +5,7 @@
 
 Name:             haproxy
 Version:          1.8.14
-Release:          5
+Release:          4
 Summary:          The Reliable, High Performance TCP/HTTP Load Balancer
 
 License:          GPLv2+
@@ -19,7 +19,6 @@ Source4:          %{name}.sysconfig
 Patch6000:	  CVE-2018-20615-BUG-CRITICAL-mux-h2-re-check-the-frame-length-when-P.patch
 Patch6001:	  CVE-2018-20103.patch
 Patch6002:	  CVE-2018-20102.patch
-Patch6003:        CVE-2020-11100.patch
 
 BuildRequires:    gcc lua-devel pcre-devel zlib-devel openssl-devel systemd-devel systemd-units
 Requires(pre):    shadow-utils
@@ -126,11 +125,5 @@ exit 0
 %{_mandir}/man1/*
 
 %changelog
-* Thu May 7 2020 cuibaobao <cuibaobao1@huawei.com> - 1.8.14-5
-- Type:cves
-- ID: CVE-2020-11100
-- SUG:restart
-- DESC: fix CVE-2020-11100
-
 * Wed Dec 4 2019 openEuler Buildteam <buildteam@openeuler.org> - 1.8.14-4
 - Package init 
