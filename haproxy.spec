@@ -4,8 +4,8 @@
 %global _hardened_build   1
 
 Name:             haproxy
-Version:          1.8.14
-Release:          5
+Version:          2.0.14
+Release:          1
 Summary:          The Reliable, High Performance TCP/HTTP Load Balancer
 
 License:          GPLv2+
@@ -16,12 +16,9 @@ Source2:          %{name}.cfg
 Source3:          %{name}.logrotate
 Source4:          %{name}.sysconfig
 
-Patch6000:	  CVE-2018-20615-BUG-CRITICAL-mux-h2-re-check-the-frame-length-when-P.patch
-Patch6001:	  CVE-2018-20103.patch
-Patch6002:	  CVE-2018-20102.patch
-Patch6003:        CVE-2020-11100.patch
+Patch0:           Add-support-for-the-Lua-5.4.patch
 
-BuildRequires:    gcc lua-devel pcre-devel zlib-devel openssl-devel systemd-devel systemd-units
+BuildRequires:    gcc lua-devel pcre-devel zlib-devel openssl-devel systemd-devel systemd-units libatomic
 Requires(pre):    shadow-utils
 Requires(post):   systemd
 Requires(preun):  systemd
@@ -42,7 +39,7 @@ use_regparm_opt=
 use_regparm_opt="USE_REGPARM=1"
 %endif
 
-%make_build CPU="generic" TARGET="linux2628" USE_OPENSSL=1 USE_PCRE=1 USE_ZLIB=1 \
+%make_build CPU="generic" TARGET="linux-glibc" USE_OPENSSL=1 USE_PCRE=1 USE_ZLIB=1 \
     USE_LUA=1 USE_CRYPT_H=1 USE_SYSTEMD=1 USE_LINUX_TPROXY=1 USE_GETADDRINFO=1 ${use_regparm_opt} \
     ADDINC="%{optflags}" ADDLIB="%{__global_ldflags}"
 
@@ -126,6 +123,12 @@ exit 0
 %{_mandir}/man1/*
 
 %changelog
+* Wed Aug 12 2020 gaihuiying <gaihuiying1@huawei.com> - 2.0.14-1
+- Type:requirement
+- ID:NA
+- SUG:NA
+- DESC:update sendmail to 2.0.14
+
 * Thu May 7 2020 cuibaobao <cuibaobao1@huawei.com> - 1.8.14-5
 - Type:cves
 - ID: CVE-2020-11100
