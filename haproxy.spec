@@ -10,7 +10,7 @@ Summary:          The Reliable, High Performance TCP/HTTP Load Balancer
 
 License:          GPLv2+
 URL:              https://www.haproxy.org/
-Source0:          https://www.haproxy.org/download/2.0/src/haproxy-2.0.17.tar.gz
+Source0:          https://www.haproxy.org/download/2.0/src/%{name}-%{version}.tar.gz
 Source1:          %{name}.service
 Source2:          %{name}.cfg
 Source3:          %{name}.logrotate
