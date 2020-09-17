@@ -4,19 +4,18 @@
 %global _hardened_build   1
 
 Name:             haproxy
-Version:          2.0.14
-Release:          2
+Version:          2.0.17
+Release:          1
 Summary:          The Reliable, High Performance TCP/HTTP Load Balancer
 
 License:          GPLv2+
-URL:              http://www.haproxy.org/
-Source0:          http://www.haproxy.org/download/1.8/src/haproxy-%{version}.tar.gz
+URL:              https://www.haproxy.org/
+Source0:          https://www.haproxy.org/download/2.0/src/%{name}-%{version}.tar.gz
 Source1:          %{name}.service
 Source2:          %{name}.cfg
 Source3:          %{name}.logrotate
 Source4:          %{name}.sysconfig
 
-Patch0001:        Add-support-for-the-Lua-5.4.patch
 
 BuildRequires:    gcc lua-devel pcre-devel zlib-devel openssl-devel systemd-devel systemd-units libatomic
 Requires(pre):    shadow-utils
@@ -31,7 +30,7 @@ and proxying for TCP and HTTP-based applications. It is particularly suited for 
 web sites and powers quite a number of the world's most visited ones. 
 
 %prep
-%autosetup -n %{name}-%{version} -p1
+%autosetup -n %{name}-%{version} 
 
 %build
 use_regparm_opt=
@@ -123,6 +122,9 @@ exit 0
 %{_mandir}/man1/*
 
 %changelog
+* Tue Sep 15 2020 Ge Wang <wangge20@huawei.com> - 2.0.17-1
+- update to 2.0.17 and modify source0 url
+
 * Wed Aug 05 2020 lingsheng <lingsheng@huawei.com> - 2.0.14-2
 - Add support for the Lua 5.4
 
