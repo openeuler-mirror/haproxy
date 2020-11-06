@@ -5,7 +5,7 @@
 
 Name:             haproxy
 Version:          2.0.14
-Release:          1
+Release:          2
 Summary:          The Reliable, High Performance TCP/HTTP Load Balancer
 
 License:          GPLv2+
@@ -19,6 +19,7 @@ Source4:          %{name}.sysconfig
 Patch0:           Add-support-for-the-Lua-5.4.patch
 
 BuildRequires:    gcc lua-devel pcre-devel zlib-devel openssl-devel systemd-devel systemd-units libatomic
+Requires:         %{name}-help = %{version}-%{release}
 Requires(pre):    shadow-utils
 Requires(post):   systemd
 Requires(preun):  systemd
@@ -123,6 +124,9 @@ exit 0
 %{_mandir}/man1/*
 
 %changelog
+* Thu Nov 05 2020 leiju <leiju4@huawei.com> - 2.0.14-2
+- Add Requires haproxy-help into haproxy
+
 * Wed Aug 12 2020 gaihuiying <gaihuiying1@huawei.com> - 2.0.14-1
 - Type:requirement
 - ID:NA
