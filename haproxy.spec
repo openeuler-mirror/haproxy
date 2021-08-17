@@ -4,19 +4,18 @@
 %global _hardened_build   1
 
 Name:             haproxy
-Version:          2.0.14
-Release:          2
+Version:          2.2.1
+Release:          1
 Summary:          The Reliable, High Performance TCP/HTTP Load Balancer
 
 License:          GPLv2+
-URL:              http://www.haproxy.org/
-Source0:          http://www.haproxy.org/download/1.8/src/haproxy-%{version}.tar.gz
+URL:              https://www.haproxy.org/
+Source0:          https://www.haproxy.org/download/2.0/src/%{name}-%{version}.tar.gz
 Source1:          %{name}.service
 Source2:          %{name}.cfg
 Source3:          %{name}.logrotate
 Source4:          %{name}.sysconfig
 
-Patch0:           Add-support-for-the-Lua-5.4.patch
 
 BuildRequires:    gcc lua-devel pcre-devel zlib-devel openssl-devel systemd-devel systemd-units libatomic
 Requires:         %{name}-help = %{version}-%{release}
@@ -42,7 +41,7 @@ use_regparm_opt="USE_REGPARM=1"
 
 %make_build CPU="generic" TARGET="linux-glibc" USE_OPENSSL=1 USE_PCRE=1 USE_ZLIB=1 \
     USE_LUA=1 USE_CRYPT_H=1 USE_SYSTEMD=1 USE_LINUX_TPROXY=1 USE_GETADDRINFO=1 ${use_regparm_opt} \
-    ADDINC="%{optflags}" ADDLIB="%{__global_ldflags}"
+    ADDINC="%{optflags}" ADDLIB="%{__global_ldflags}" EXTRA_OBJS="contrib/prometheus-exporter/service-prometheus.o"
 
 pushd contrib/halog
 %make_build ${halog} OPTIMIZE="%{optflags} %{build_ldflags}"
@@ -124,6 +123,9 @@ exit 0
 %{_mandir}/man1/*
 
 %changelog
+* Thu Fri 13 2021 xu_ping <xuping33@huawei.com> - 2.2.1-1
+- update to 2.2.1
+
 * Thu Nov 05 2020 leiju <leiju4@huawei.com> - 2.0.14-2
 - Add Requires haproxy-help into haproxy
 
