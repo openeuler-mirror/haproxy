@@ -5,7 +5,7 @@
 
 Name:             haproxy
 Version:          2.2.1
-Release:          1
+Release:          2
 Summary:          The Reliable, High Performance TCP/HTTP Load Balancer
 
 License:          GPLv2+
@@ -16,6 +16,9 @@ Source2:          %{name}.cfg
 Source3:          %{name}.logrotate
 Source4:          %{name}.sysconfig
 
+Patch001:         CVE-2021-39241-pre.patch
+Patch002:         CVE-2021-39241.patch
+Patch003:         CVE-2021-39242.patch
 
 BuildRequires:    gcc lua-devel pcre-devel zlib-devel openssl-devel systemd-devel systemd-units libatomic
 Requires:         %{name}-help = %{version}-%{release}
@@ -123,6 +126,9 @@ exit 0
 %{_mandir}/man1/*
 
 %changelog
+* Sat Aug 28 2021 liwu <liwu13@huawei.com> - 2.2.1-2
+- fix CVE-2021-39241,CVE-2021-39242
+
 * Thu Fri 13 2021 xu_ping <xuping33@huawei.com> - 2.2.1-1
 - update to 2.2.1
 
