@@ -5,7 +5,7 @@
 
 Name:             haproxy
 Version:          2.2.1
-Release:          1
+Release:          2
 Summary:          The Reliable, High Performance TCP/HTTP Load Balancer
 
 License:          GPLv2+
@@ -15,7 +15,9 @@ Source1:          %{name}.service
 Source2:          %{name}.cfg
 Source3:          %{name}.logrotate
 Source4:          %{name}.sysconfig
-
+Patch001:         CVE-2021-39241-pre.patch
+Patch002:         CVE-2021-39241.patch
+Patch003:         CVE-2021-39242.patch
 
 BuildRequires:    gcc lua-devel pcre-devel zlib-devel openssl-devel systemd-devel systemd-units libatomic
 Requires(pre):    shadow-utils
@@ -30,8 +32,7 @@ and proxying for TCP and HTTP-based applications. It is particularly suited for 
 web sites and powers quite a number of the world's most visited ones. 
 
 %prep
-%autosetup -n %{name}-%{version} 
-
+%autosetup -n %{name}-%{version} -p1
 %build
 use_regparm_opt=
 %ifarch %ix86 x86_64
@@ -122,6 +123,9 @@ exit 0
 %{_mandir}/man1/*
 
 %changelog
+* Thu Aug 26 liwu <liwu13@huawei.com> - 2.2.1-2
+- fix CVE-2021-39241,CVE-2021-39242
+
 * Thu July 1 huanghaitao <huanghaitao8@huawei.com> - 2.2.1-1
 - update to 2.2.1
 
