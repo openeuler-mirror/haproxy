@@ -4,19 +4,17 @@
 %global _hardened_build   1
 
 Name:             haproxy
-Version:          2.0.14
+Version:          2.2.16
 Release:          1
 Summary:          The Reliable, High Performance TCP/HTTP Load Balancer
 
 License:          GPLv2+
 URL:              http://www.haproxy.org/
-Source0:          http://www.haproxy.org/download/1.8/src/haproxy-%{version}.tar.gz
+Source0:          http://www.haproxy.org/download/2.2/src/%{name}-%{version}.tar.gz
 Source1:          %{name}.service
 Source2:          %{name}.cfg
 Source3:          %{name}.logrotate
 Source4:          %{name}.sysconfig
-
-Patch0:           Add-support-for-the-Lua-5.4.patch
 
 BuildRequires:    gcc lua-devel pcre-devel zlib-devel openssl-devel systemd-devel systemd-units libatomic
 Requires(pre):    shadow-utils
@@ -123,6 +121,9 @@ exit 0
 %{_mandir}/man1/*
 
 %changelog
+* Wed Aug 31 2021 yaoxin <yaoxin30@huawei.com> - 2.2.16-1
+- Upgrade 2.2.16 to fix CVE-2021-39240-to-CVE-2021-39242
+
 * Wed Aug 12 2020 gaihuiying <gaihuiying1@huawei.com> - 2.0.14-1
 - Type:requirement
 - ID:NA
