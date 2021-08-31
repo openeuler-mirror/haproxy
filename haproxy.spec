@@ -4,13 +4,13 @@
 %global _hardened_build   1
 
 Name:             haproxy
-Version:          2.0.17
+Version:          2.2.16
 Release:          1
 Summary:          The Reliable, High Performance TCP/HTTP Load Balancer
 
 License:          GPLv2+
 URL:              https://www.haproxy.org/
-Source0:          https://www.haproxy.org/download/2.0/src/%{name}-%{version}.tar.gz
+Source0:          https://www.haproxy.org/download/2.2/src/%{name}-%{version}.tar.gz
 Source1:          %{name}.service
 Source2:          %{name}.cfg
 Source3:          %{name}.logrotate
@@ -122,6 +122,9 @@ exit 0
 %{_mandir}/man1/*
 
 %changelog
+* Tue Aug 31 2021 yaoxin <yaoxin30@huawei.com> - 2.2.16-1
+- Upgrade 2.2.16 to fix CVE-2021-39240-to-CVE-2021-39242
+
 * Tue Sep 15 2020 Ge Wang <wangge20@huawei.com> - 2.0.17-1
 - update to 2.0.17 and modify source0 url
 
