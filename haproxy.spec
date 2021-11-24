@@ -5,7 +5,7 @@
 
 Name:             haproxy
 Version:          2.2.16
-Release:          2
+Release:          3
 Summary:          The Reliable, High Performance TCP/HTTP Load Balancer
 
 License:          GPLv2+
@@ -38,9 +38,15 @@ use_regparm_opt=
 use_regparm_opt="USE_REGPARM=1"
 %endif
 
+%ifarch riscv64
+global_ldflags="%{__global_ldflags} -latomic"
+%else
+global_ldflags="%{__global_ldflags}"
+%endif
+
 %make_build CPU="generic" TARGET="linux-glibc" USE_OPENSSL=1 USE_PCRE=1 USE_ZLIB=1 \
     USE_LUA=1 USE_CRYPT_H=1 USE_SYSTEMD=1 USE_LINUX_TPROXY=1 USE_GETADDRINFO=1 ${use_regparm_opt} \
-    ADDINC="%{optflags}" ADDLIB="%{__global_ldflags}" EXTRA_OBJS="contrib/prometheus-exporter/service-prometheus.o"
+    ADDINC="%{optflags}" ADDLIB="${global_ldflags}" EXTRA_OBJS="contrib/prometheus-exporter/service-prometheus.o"
 
 pushd contrib/halog
 %make_build ${halog} OPTIMIZE="%{optflags} %{build_ldflags}"
@@ -122,6 +128,9 @@ exit 0
 %{_mandir}/man1/*
 
 %changelog
+* Tue Jan 04 lvxiaoqian <xiaoqian@nj.iscas.ac.cn> - 2.2.16-3
+- add ldflag for riscv
+
 * Sat Sep 18 yaoxin <yaoxin30@huawei.com> - 2.2.16-2
 - Fix CVE-2021-40346
 
