@@ -5,7 +5,7 @@
 
 Name:             haproxy
 Version:          2.4.8
-Release:          1
+Release:          2
 Summary:          The Reliable, High Performance TCP/HTTP Load Balancer
 
 License:          GPLv2+
@@ -15,6 +15,8 @@ Source1:          %{name}.service
 Source2:          %{name}.cfg
 Source3:          %{name}.logrotate
 Source4:          %{name}.sysconfig
+
+Patch0:           CVE-2022-0711.patch
 
 BuildRequires:    gcc lua-devel pcre2-devel openssl-devel systemd-devel systemd libatomic
 Requires(pre):    shadow-utils
@@ -118,6 +120,9 @@ exit 0
 %{_mandir}/man1/*
 
 %changelog
+* Fri Mar 11 2022 yaoxin <yaoxin30@huawei.com> - 2.4.8-2
+- Fix CVE-2022-0711
+
 * Tue Dec 07 2021 yanglu <yanglu72@huawei.com> - 2.4.8-1
 - update haproxy to 2.4.8
 
