@@ -4,26 +4,23 @@
 %global _hardened_build   1
 
 Name:             haproxy
-Version:          2.2.16
-Release:          3
+Version:          2.4.8
+Release:          1
 Summary:          The Reliable, High Performance TCP/HTTP Load Balancer
 
 License:          GPLv2+
 URL:              https://www.haproxy.org/
-Source0:          https://www.haproxy.org/download/2.2/src/%{name}-%{version}.tar.gz
+Source0:          https://www.haproxy.org/download/2.4/src/%{name}-%{version}.tar.gz
 Source1:          %{name}.service
 Source2:          %{name}.cfg
 Source3:          %{name}.logrotate
 Source4:          %{name}.sysconfig
 
-Patch0001:        CVE-2021-40346.patch
-Patch0002:        CVE-2022-0711.patch
+Patch0001:        CVE-2022-0711.patch
 
-BuildRequires:    gcc lua-devel pcre-devel zlib-devel openssl-devel systemd-devel systemd-units libatomic
+BuildRequires:    gcc lua-devel pcre2-devel openssl-devel systemd-devel systemd libatomic
 Requires(pre):    shadow-utils
-Requires(post):   systemd
-Requires(preun):  systemd
-Requires(postun): systemd
+%{?systemd_requires}
 
 %package_help
 %description
@@ -39,16 +36,14 @@ use_regparm_opt=
 use_regparm_opt="USE_REGPARM=1"
 %endif
 
-%make_build CPU="generic" TARGET="linux-glibc" USE_OPENSSL=1 USE_PCRE=1 USE_ZLIB=1 \
-    USE_LUA=1 USE_CRYPT_H=1 USE_SYSTEMD=1 USE_LINUX_TPROXY=1 USE_GETADDRINFO=1 ${use_regparm_opt} \
-    ADDINC="%{optflags}" ADDLIB="%{__global_ldflags}" EXTRA_OBJS="contrib/prometheus-exporter/service-prometheus.o"
+%make_build CPU="generic" TARGET="linux-glibc" USE_OPENSSL=1 USE_PCRE2=1 USE_SLZ=1 \
+    USE_LUA=1 USE_CRYPT_H=1 USE_SYSTEMD=1 USE_LINUX_TPROXY=1 USE_GETADDRINFO=1 USE_PROMEX=1 DEFINE=-DMAX_SESS_STKCTR=12 ${use_regparm_opt} \
+    ADDINC="%{build_cflags}" ADDLIB="%{build_ldflags}"
 
-pushd contrib/halog
-%make_build ${halog} OPTIMIZE="%{optflags} %{build_ldflags}"
-popd
+%make_build admin/halog/halog ADDINC="%{build_cflags}" ADDLIB="%{build_ldflags}"
 
-pushd contrib/iprange
-%make_build iprange OPTIMIZE="%{optflags} %{build_ldflags}"
+pushd admin/iprange
+%make_build OPTIMIZE="%{build_cflags}" LDFLAGS="%{build_ldflags}"
 popd
 
 %install
@@ -67,8 +62,9 @@ install -d -m 0755 .%{_localstatedir}/lib/haproxy
 install -d -m 0755 .%{_datadir}/haproxy
 popd
 
-install -p -m 0755 ./contrib/halog/halog %{buildroot}%{_bindir}/halog
-install -p -m 0755 ./contrib/iprange/iprange %{buildroot}%{_bindir}/iprange
+install -p -m 0755 ./admin/halog/halog %{buildroot}%{_bindir}/halog
+install -p -m 0755 ./admin/iprange/iprange %{buildroot}%{_bindir}/iprange
+install -p -m 0755 ./admin/iprange/ip6range %{buildroot}%{_bindir}/ip6range
 install -p -m 0644 ./examples/errorfiles/* %{buildroot}%{_datadir}/haproxy
 
 for httpfile in $(find ./examples/errorfiles/ -type f) 
@@ -111,6 +107,7 @@ exit 0
 %config(noreplace) %{_sysconfdir}/sysconfig/%{name}
 %{_bindir}/halog
 %{_bindir}/iprange
+%{_bindir}/ip6range
 %{_sbindir}/%{name}
 %{_unitdir}/%{name}.service
 %dir %{_localstatedir}/lib/haproxy
@@ -123,6 +120,9 @@ exit 0
 %{_mandir}/man1/*
 
 %changelog
+* Wed Mar 23 2022 xihaochen <xihaochen@h-partners.com> - 2.4.8-1
+- update haproxy to 2.4.8
+
 * Fri Mar 11 2022 yaoxin <yaoxin30@huawei.com> - 2.2.16-3
 - Fix CVE-2022-0711
 
