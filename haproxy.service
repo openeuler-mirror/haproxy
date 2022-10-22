@@ -1,15 +1,17 @@
 [Unit]
 Description=HAProxy Load Balancer
-After=network.target
+After=network-online.target            
+Wants=network-online.target
 
 [Service]
-Environment="HAPROXY_CONF=/etc/haproxy/haproxy.cfg" "PIDFILE=/run/haproxy.pid"
-ExecStartPre=/usr/sbin/haproxy -f $HAPROXY_CONF -c -q
-# -W: master-worker mode
-ExecStart=/usr/sbin/haproxy -Ws -f $HAPROXY_CONF -p $PIDFILE
-ExecReload=/usr/sbin/haproxy -f $HAPROXY_CONF -c -q
+EnvironmentFile=-/etc/sysconfig/haproxy
+Environment="HAPROXY_CONF=/etc/haproxy/haproxy.cfg" "PIDFILE=/run/haproxy.pid" "CFGDIR=/etc/haproxy/conf.d"
+ExecStartPre=/usr/sbin/haproxy -f $HAPROXY_CONF -f $CFGDIR -c -q $OPTIONS
+ExecStart=/usr/sbin/haproxy -Ws -f $HAPROXY_CONF -f $CFGDIR -p $PIDFILE $OPTIONS
+ExecReload=/usr/sbin/haproxy -f $HAPROXY_CONF -f $CFGDIR -c -q $OPTIONS
 ExecReload=/bin/kill -USR2 $MAINPID
 KillMode=mixed
+SuccessExitStatus=143
 Type=notify
 
 [Install]
