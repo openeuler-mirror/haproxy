@@ -4,19 +4,17 @@
 %global _hardened_build   1
 
 Name:             haproxy
-Version:          2.2.16
-Release:          3
+Version:          2.6.6
+Release:          1
 Summary:          The Reliable, High Performance TCP/HTTP Load Balancer
 
 License:          GPLv2+
 URL:              https://www.haproxy.org/
-Source0:          https://www.haproxy.org/download/2.2/src/%{name}-%{version}.tar.gz
+Source0:          https://www.haproxy.org/download/2.6/src/%{name}-%{version}.tar.gz
 Source1:          %{name}.service
 Source2:          %{name}.cfg
 Source3:          %{name}.logrotate
 Source4:          %{name}.sysconfig
-
-Patch0001:        CVE-2021-40346.patch
 
 BuildRequires:    gcc lua-devel pcre-devel zlib-devel openssl-devel systemd-devel systemd-units libatomic
 Requires(pre):    shadow-utils
@@ -46,15 +44,7 @@ global_ldflags="%{__global_ldflags}"
 
 %make_build CPU="generic" TARGET="linux-glibc" USE_OPENSSL=1 USE_PCRE=1 USE_ZLIB=1 \
     USE_LUA=1 USE_CRYPT_H=1 USE_SYSTEMD=1 USE_LINUX_TPROXY=1 USE_GETADDRINFO=1 ${use_regparm_opt} \
-    ADDINC="%{optflags}" ADDLIB="${global_ldflags}" EXTRA_OBJS="contrib/prometheus-exporter/service-prometheus.o"
-
-pushd contrib/halog
-%make_build ${halog} OPTIMIZE="%{optflags} %{build_ldflags}"
-popd
-
-pushd contrib/iprange
-%make_build iprange OPTIMIZE="%{optflags} %{build_ldflags}"
-popd
+    ADDINC="%{optflags}" ADDLIB="${global_ldflags}" EXTRA_OBJS="addons/promex/service-prometheus.o"
 
 %install
 install -d %{buildroot}%{_sbindir}
@@ -72,8 +62,6 @@ install -d -m 0755 .%{_localstatedir}/lib/haproxy
 install -d -m 0755 .%{_datadir}/haproxy
 popd
 
-install -p -m 0755 ./contrib/halog/halog %{buildroot}%{_bindir}/halog
-install -p -m 0755 ./contrib/iprange/iprange %{buildroot}%{_bindir}/iprange
 install -p -m 0644 ./examples/errorfiles/* %{buildroot}%{_datadir}/haproxy
 
 for httpfile in $(find ./examples/errorfiles/ -type f) 
@@ -114,8 +102,6 @@ exit 0
 %config(noreplace) %{_sysconfdir}/haproxy/%{name}.cfg
 %config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
 %config(noreplace) %{_sysconfdir}/sysconfig/%{name}
-%{_bindir}/halog
-%{_bindir}/iprange
 %{_sbindir}/%{name}
 %{_unitdir}/%{name}.service
 %dir %{_localstatedir}/lib/haproxy
@@ -124,10 +110,13 @@ exit 0
 
 %files help
 %defattr(-,root,root)
-%doc doc/* examples/* CHANGELOG README ROADMAP VERSION
+%doc doc/* examples/* CHANGELOG README VERSION
 %{_mandir}/man1/*
 
 %changelog
+* Mon Oct 24 YukariChiba <i@0x7f.cc> - 2.6.6-1
+- Upgrade version to 2.6.6
+
 * Tue Jan 04 lvxiaoqian <xiaoqian@nj.iscas.ac.cn> - 2.2.16-3
 - add ldflag for riscv
 
