@@ -4,19 +4,18 @@
 %global _hardened_build   1
 
 Name:             haproxy
-Version:          2.4.8
-Release:          2
+Version:          2.6.6
+Release:          1
 Summary:          The Reliable, High Performance TCP/HTTP Load Balancer
 
 License:          GPLv2+
 URL:              https://www.haproxy.org/
-Source0:          https://www.haproxy.org/download/2.4/src/%{name}-%{version}.tar.gz
+Source0:          https://www.haproxy.org/download/2.6/src/%{name}-%{version}.tar.gz
 Source1:          %{name}.service
 Source2:          %{name}.cfg
 Source3:          %{name}.logrotate
 Source4:          %{name}.sysconfig
 
-Patch0:           CVE-2022-0711.patch
 
 BuildRequires:    gcc lua-devel pcre2-devel openssl-devel systemd-devel systemd libatomic
 Requires(pre):    shadow-utils
@@ -31,13 +30,9 @@ web sites and powers quite a number of the world's most visited ones.
 %prep
 %autosetup -n %{name}-%{version} -p1
 %build
-use_regparm_opt=
-%ifarch %ix86 x86_64
-use_regparm_opt="USE_REGPARM=1"
-%endif
 
 %make_build CPU="generic" TARGET="linux-glibc" USE_OPENSSL=1 USE_PCRE2=1 USE_SLZ=1 \
-    USE_LUA=1 USE_CRYPT_H=1 USE_SYSTEMD=1 USE_LINUX_TPROXY=1 USE_GETADDRINFO=1 USE_PROMEX=1 DEFINE=-DMAX_SESS_STKCTR=12 ${use_regparm_opt} \
+    USE_LUA=1 USE_CRYPT_H=1 USE_SYSTEMD=1 USE_LINUX_TPROXY=1 USE_GETADDRINFO=1 USE_PROMEX=1 DEFINE=-DMAX_SESS_STKCTR=12 \
     ADDINC="%{build_cflags}" ADDLIB="%{build_ldflags}"
 
 %make_build admin/halog/halog ADDINC="%{build_cflags}" ADDLIB="%{build_ldflags}"
@@ -59,6 +54,7 @@ install -p -D -m 0644 %{SOURCE3} .%{_sysconfdir}/logrotate.d/%{name}
 install -p -D -m 0644 %{SOURCE4} .%{_sysconfdir}/sysconfig/%{name}
 install -d -m 0755 .%{_bindir}
 install -d -m 0755 .%{_localstatedir}/lib/haproxy
+install -d -m 0755 .%{_sysconfdir}/haproxy/conf.d
 install -d -m 0755 .%{_datadir}/haproxy
 popd
 
@@ -110,16 +106,23 @@ exit 0
 %{_bindir}/ip6range
 %{_sbindir}/%{name}
 %{_unitdir}/%{name}.service
+%dir %{_sysconfdir}/haproxy/conf.d
 %dir %{_localstatedir}/lib/haproxy
 %dir %{_datadir}/haproxy
 %{_datadir}/haproxy/*
 
 %files help
 %defattr(-,root,root)
-%doc doc/* examples/* CHANGELOG README ROADMAP VERSION
+%doc doc/* examples/* CHANGELOG README VERSION
 %{_mandir}/man1/*
 
 %changelog
+* Sat Oct 22 2022 xinghe <xinghe2@h-partners.com> - 2.6.6-1
+- Type:enhancement
+- ID:NA
+- SUG:NA
+- DESC:upgrade to 2.6.6
+
 * Fri Mar 11 2022 yaoxin <yaoxin30@huawei.com> - 2.4.8-2
 - Fix CVE-2022-0711
 
