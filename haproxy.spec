@@ -5,7 +5,7 @@
 
 Name:             haproxy
 Version:          2.6.6
-Release:          1
+Release:          2
 Summary:          The Reliable, High Performance TCP/HTTP Load Balancer
 
 License:          GPLv2+
@@ -16,6 +16,8 @@ Source2:          %{name}.cfg
 Source3:          %{name}.logrotate
 Source4:          %{name}.sysconfig
 
+Patch0:           CVE-2023-25725.patch
+Patch1:           CVE-2023-0056.patch
 
 BuildRequires:    gcc lua-devel pcre2-devel openssl-devel systemd-devel systemd libatomic
 Requires(pre):    shadow-utils
@@ -117,6 +119,9 @@ exit 0
 %{_mandir}/man1/*
 
 %changelog
+* Sat Feb 25 2023 yaoxin <yaoxin30@h-partners.com> - 2.6.6-2
+- Fix CVE-2023-25725 and CVE-2023-0056
+
 * Sat Oct 22 2022 xinghe <xinghe2@h-partners.com> - 2.6.6-1
 - Type:enhancement
 - ID:NA
