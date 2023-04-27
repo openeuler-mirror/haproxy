@@ -5,7 +5,7 @@
 
 Name:             haproxy
 Version:          2.6.6
-Release:          2
+Release:          3
 Summary:          The Reliable, High Performance TCP/HTTP Load Balancer
 
 License:          GPLv2+
@@ -32,15 +32,18 @@ web sites and powers quite a number of the world's most visited ones.
 %prep
 %autosetup -n %{name}-%{version} -p1
 %build
+%if "%toolchain" == "clang"
+	%global make_opts HOSTCC=clang CC=clang CXX=clang++
+%endif
 
-%make_build CPU="generic" TARGET="linux-glibc" USE_OPENSSL=1 USE_PCRE2=1 USE_SLZ=1 \
+%make_build %{?make_opts} CPU="generic" TARGET="linux-glibc" USE_OPENSSL=1 USE_PCRE2=1 USE_SLZ=1 \
     USE_LUA=1 USE_CRYPT_H=1 USE_SYSTEMD=1 USE_LINUX_TPROXY=1 USE_GETADDRINFO=1 USE_PROMEX=1 DEFINE=-DMAX_SESS_STKCTR=12 \
     ADDINC="%{build_cflags}" ADDLIB="%{build_ldflags}"
 
-%make_build admin/halog/halog ADDINC="%{build_cflags}" ADDLIB="%{build_ldflags}"
+%make_build %{?make_opts} admin/halog/halog ADDINC="%{build_cflags}" ADDLIB="%{build_ldflags}"
 
 pushd admin/iprange
-%make_build OPTIMIZE="%{build_cflags}" LDFLAGS="%{build_ldflags}"
+%make_build %{?make_opts} OPTIMIZE="%{build_cflags}" LDFLAGS="%{build_ldflags}"
 popd
 
 %install
@@ -119,6 +122,9 @@ exit 0
 %{_mandir}/man1/*
 
 %changelog
+* Thu Apr 27 2023 yoo <sunyuechi@iscas.ac.cn> - 2.6.6-3
+- support clang
+
 * Sat Feb 25 2023 yaoxin <yaoxin30@h-partners.com> - 2.6.6-2
 - Fix CVE-2023-25725 and CVE-2023-0056
 
